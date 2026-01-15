@@ -1,0 +1,26 @@
+button {
+    background-color: grey;
+    border: black;
+    border-radius: 500px;
+    color: black;
+    padding: 20px;
+    font-size: 18px;   
+  }
+  button:hover{
+    background-color: #e41818;
+  }
+  h1{
+    color: blue;
+    text-align: center;
+    background-color: aqua;
+    border: dashed red;
+    display: inline-block;
+ }
+  #result{
+    display: inline-block;
+    font-size: 22px;
+    border: dashed red;
+}
+body{
+    text-align: center;
+}
