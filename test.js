@@ -1,51 +1,53 @@
-const express=require('express')
-const mongoose=require('mongoose')
+const express = require('express')
+const mongoose = require('mongoose')
 const app = express()
 const port = 3000
 
 app.use(express.json())
 
-mongoose.connect('mongodb+srv://tusharjainmandoth:dfMqcQ4sRoc4xjxi@cluster0.iqkug7i.mongodb.net/todoDB')
+mongoose.connect('Mongodburl')
   .then(() => console.log('MongoDB connected'))
 
-const todoSchema=new mongoose.Schema({
-  value: String
+const todoSchema = new mongoose.Schema({
+  value: String,  
+  no: Number 
 })
 
-const Todo=mongoose.model('Todo',todoSchema)
+const Todo=mongoose.model('Todo', todoSchema)
 
 const router = express.Router()
-userRouter =express.Router();
 
 router.get('/', (req, res) => {
-  res.send('To do list is running!')
+  res.send('Todo API is running!')
 })
 
-router.post('/create', async (req, res) => {
-  console.log(req.body) 
-  await Todo.create({ value: req.body.value })
-  console.log('Todo item created')
-  res.send('Created a new todo item')
+router.post('/create',async(req, res) => {
+  await Todo.create({value:req.body.value })
+  res.send('Todo created')
 })
 
-router.put('/update', async(req, res)=>{
-  await Todo.updateOne({},{$set:{value: req.body.value }})
-  res.send(`Update to do item to: ${req.body.value}`)
+router.get('/see',async(req, res) => {
+  const todos =await Todo.find()
+  res.send('All Todos')
+  res.json(todos)
 })
 
-router.delete('/delete', async(req, res) => {
-  await Todo.deleteOne({})
-  res.send(`Delete to do item`)
+router.put('/update/:id', async(req, res) => {
+  const doc = await Todo.findById(__id)
+  if (!doc) return res.status(404).send('Todo not found')
+  await Todo.updateOne({_id: __id}, {$set:{value}})
+  res.send('Todo updated')
 })
 
-router.get('/see', async (req, res) => {
-  const todo=await Todo.findOne()
-  res.send(`Current to do item: ${todo ? todo.value : 'No to do item found'}`)
+router.delete('/delete/:id', async (req, res) => {
+  const doc = await Todo.findById(req.params.id)
+  if (!doc) return res.status(404).send('Todo not found')
+  await Todo.deleteOne({_id:req.params.id})
+  res.send('Todo deleted') 
 })
 
-app.use('/todo', router);
-app.use('/user', userRouter)
+app.use('/todo', router)
 
 app.listen(port, () => {
-  console.log(`app listening on port ${port}`)
+  console.log(`App listening on port ${port}`)
 })
